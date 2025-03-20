@@ -6,7 +6,11 @@ export function createTenantsDropdown(items, selected, onSelect) {
 
   const button = document.createElement("button");
   button.className = "dropdown-button";
-  button.innerHTML = '<img src="/icons/unfold-more.svg" alt="Other tenants" />';
+  
+  const buttonIcon = document.createElement("img");
+  buttonIcon.src = "/icons/unfold-more.svg";
+  buttonIcon.alt = "Other tenants";
+  button.appendChild(buttonIcon);
 
   const menu = document.createElement("div");
   menu.className = "dropdown-menu";
@@ -28,17 +32,29 @@ export function createTenantsDropdown(items, selected, onSelect) {
       selected?.id === item.id ? "active" : ""
     }`;
 
-    itemButton.innerHTML = `
-      <div class="dropdown-item-content">
-        <div class="initials">${getInitials(item.name)}</div>
-        ${item.name}
-      </div>
-      ${
-        selected?.id === item.id
-          ? '<img src="/icons/checkmark.svg" alt="Selected tenant" />'
-          : ""
-      }
-    `;
+    // Create content container
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "dropdown-item-content";
+    
+    // Create initials display
+    const initialsDiv = document.createElement("div");
+    initialsDiv.className = "initials";
+    initialsDiv.textContent = getInitials(item.name);
+    
+    // Assemble content
+    contentDiv.appendChild(initialsDiv);
+    contentDiv.appendChild(document.createTextNode(item.name));
+    
+    // Add content to item button
+    itemButton.appendChild(contentDiv);
+    
+    // Add selected indicator if needed
+    if (selected?.id === item.id) {
+      const checkmarkImg = document.createElement("img");
+      checkmarkImg.src = "/icons/checkmark.svg";
+      checkmarkImg.alt = "Selected tenant";
+      itemButton.appendChild(checkmarkImg);
+    }
 
     itemButton.addEventListener("click", () => {
       onSelect(item);

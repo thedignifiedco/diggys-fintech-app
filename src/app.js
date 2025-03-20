@@ -1,13 +1,8 @@
 import { initialize } from "@frontegg/js";
 import "./styles/globals.css";
 import { createAccountInfo } from "./components/accountInfo";
+import { DEFAULT_SANDBOX_CONTEXT, ELEMENT_IDS } from "./constants/config";
 
-const DEFAULT_SANDBOX_CONTEXT = {
-  baseUrl: "https://sandbox.frontegg.com",
-  clientId: "9af126b9-c35f-4e2d-a3f1-c261e22aaf4a",
-};
-
-// Initialize Frontegg
 const frontegg = initialize({
   contextOptions: {
     baseUrl: DEFAULT_SANDBOX_CONTEXT.baseUrl,
@@ -16,80 +11,68 @@ const frontegg = initialize({
   hostedLoginBox: true,
 });
 
-// Elements
-const logoutBtn = document.getElementById("logoutBtn");
-const loginBtn = document.getElementById("loginBtn");
-const welcomeContent = document.getElementById("welcomeContent");
-const signupBanner = document.getElementById("signup-banner");
+const elements = {
+  logoutBtn: document.getElementById(ELEMENT_IDS.logoutBtn),
+  loginBtn: document.getElementById(ELEMENT_IDS.loginBtn),
+  welcomeContent: document.getElementById(ELEMENT_IDS.welcomeContent),
+  signupBanner: document.getElementById(ELEMENT_IDS.signupBanner),
+};
 
-// Check authentication state and update UI
 function updateUI(state) {
   try {
-    const isAuthenticated = state.auth.isAuthenticated;
-    const user = state.auth.user;
-
-    logoutBtn.style.display = isAuthenticated ? "block" : "none";
-    welcomeContent.style.display = isAuthenticated ? "none" : "flex";
+    const { isAuthenticated, user, tenantsState } = state.auth;
+    
+    elements.logoutBtn.style.display = isAuthenticated ? "block" : "none";
+    elements.welcomeContent.style.display = isAuthenticated ? "none" : "flex";
 
     if (isAuthenticated && user) {
-      const tenants = state.auth.tenantsState.tenants;
-      const activeTenant = state.auth.tenantsState.activeTenant;
-      // Remove existing account info if present
-      const existingAccountInfo = document.getElementById("accountInfo");
-      if (existingAccountInfo) {
-        existingAccountInfo.remove();
-      }
-
-      // Create and append new account info
-      const accountInfoElement = createAccountInfo(
-        user,
-        tenants,
-        activeTenant,
-        (tenant) => {
-          frontegg.switchTenant({ tenantId: tenant.tenantId });
-        },
-        frontegg
-      );
-
-      // Insert the account info after welcomeContent
-      welcomeContent.parentNode.insertBefore(
-        accountInfoElement,
-        welcomeContent.nextSibling
-      );
+      updateAuthenticatedUI(user, tenantsState);
     } else {
-      const accountInfoBlock = document.getElementById("accountInfo");
-      if (accountInfoBlock) {
-        accountInfoBlock.remove();
-      }
+      removeAccountInfo();
     }
   } catch (error) {
-    console.error("Error updating UI:", error);
+    console.error("Error updating UI:", error.message);
   }
 }
 
-// Event Listeners
-logoutBtn.addEventListener("click", () => {
-  frontegg.logout();
-});
+function updateAuthenticatedUI(user, tenantsState) {
+  removeAccountInfo();
+  
+  const accountInfoElement = createAccountInfo(
+    user,
+    tenantsState.tenants,
+    tenantsState.activeTenant,
+    (tenant) => frontegg.switchTenant({ tenantId: tenant.tenantId }),
+    frontegg
+  );
 
-loginBtn.addEventListener("click", () => {
-  frontegg.loginWithRedirect();
-});
+  if (accountInfoElement) {
+    elements.welcomeContent.parentNode.insertBefore(
+      accountInfoElement,
+      elements.welcomeContent.nextSibling
+    );
+  }
+}
 
-// Show signup banner for sandbox environment
+function removeAccountInfo() {
+  const accountInfoBlock = document.getElementById(ELEMENT_IDS.accountInfo);
+  if (accountInfoBlock) {
+    accountInfoBlock.remove();
+  }
+}
+
+elements.logoutBtn.addEventListener("click", () => frontegg.logout());
+elements.loginBtn.addEventListener("click", () => frontegg.loginWithRedirect());
+
 frontegg.addOnLoadedListener(() => {
-  const baseUrl = frontegg.store.getState().root.context.baseUrl;
-  const clientId = frontegg.store.getState().root.context.clientId;
-  if (
-    baseUrl === DEFAULT_SANDBOX_CONTEXT.baseUrl &&
-    clientId === DEFAULT_SANDBOX_CONTEXT.clientId
-  ) {
-    signupBanner.style.display = "block";
+  const state = frontegg.store.getState().root.context;
+  const isSandboxEnvironment = 
+    state.baseUrl === "https://sandbox.frontegg.com" && 
+    state.clientId === "9af126b9-c35f-4e2d-a3f1-c261e22aaf4a";
+    
+  if (isSandboxEnvironment) {
+    elements.signupBanner.style.display = "block";
   }
 });
 
-// Subscribe to state changes
-frontegg.store.subscribe(() => {
-  const state = frontegg.store.getState();
-  updateUI(state);
-});
+frontegg.store.subscribe(() => updateUI(frontegg.store.getState()));

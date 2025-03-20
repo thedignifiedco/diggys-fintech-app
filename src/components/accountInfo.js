@@ -24,14 +24,17 @@ export function createAccountInfo(user, tenants, activeTenant, onSwitchTenant, f
   const tenantsWrapper = document.createElement('div');
   tenantsWrapper.className = 'tenants-wrapper';
 
-  // User info card
   const userCard = document.createElement('article');
   userCard.className = 'tenant-card';
 
   const userTitleDiv = document.createElement('div');
   userTitleDiv.className = 'tenant-title';
   userTitleDiv.appendChild(createUserProfileIcon(user));
-  userTitleDiv.innerHTML += `<p class="tenant-name">${user.name}</p>`;
+  
+  const nameElement = document.createElement('p');
+  nameElement.className = 'tenant-name';
+  nameElement.textContent = user.name;
+  userTitleDiv.appendChild(nameElement);
 
   const userInfoDiv = document.createElement('div');
   userInfoDiv.className = 'tenant-info';
@@ -48,7 +51,6 @@ export function createAccountInfo(user, tenants, activeTenant, onSwitchTenant, f
   userCard.appendChild(userInfoDiv);
   userCard.appendChild(editButton);
 
-  // Add event listeners
   const adminPortalButton = titleSection.querySelector('.primary-button');
   adminPortalButton.addEventListener('click', () => {
     window.location.href = '#/admin-box';
@@ -60,7 +62,6 @@ export function createAccountInfo(user, tenants, activeTenant, onSwitchTenant, f
     fronteggInstance.showAdminPortal();
   });
 
-  // Assemble the components
   tenantsWrapper.appendChild(userCard);
   tenantsWrapper.appendChild(createTenantInfo(tenants, activeTenant, onSwitchTenant, fronteggInstance));
 
