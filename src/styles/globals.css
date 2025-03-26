@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@100;200;300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@100;200;300;400;500;600;700&display=swap");
 
 html,
 body,
@@ -6,14 +6,19 @@ body,
   height: 100%;
   margin: 0;
   background-color: #f9fafc;
-  font-family: 'Manrope', sans-serif;
+  font-family: "Manrope", sans-serif;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   line-height: 100%;
-  font-family: 'Manrope', sans-serif;
+  font-family: "Manrope", sans-serif;
+}
+
+body {
+  overflow: auto;
+  height: 100%;
 }
 
 :root {
@@ -30,32 +35,27 @@ body,
   --grey-600: #616161;
   --grey-900: #202020;
   --orange-400: #f6b77d;
-  
-  /* Shadows */
-  --shadow-sm: 0px 1px 4px 0px rgba(122, 124, 129, 0.24);
-  --shadow-md: 0px 4px 24px 0px rgba(47, 51, 75, 0.08);
 }
 
-/* Layout */
 .container {
   margin: 0 auto;
-  width: calc(100% - 40px);
-  max-width: 1760px;
+  width: calc(100% - 80px);
 }
 
-/* Header */
 .header {
   position: fixed;
   top: 0;
   width: 100%;
   display: flex;
   padding: 40px 0;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0px 1px 4px 0px #7a7c813d;
   background-color: var(--classic-white);
 }
 
 .header-wrapper {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: space-between;
   align-items: center;
 }
@@ -67,7 +67,6 @@ body,
   align-items: center;
 }
 
-/* Buttons */
 .secondary-button {
   font-weight: 600;
   font-size: 16px;
@@ -103,20 +102,14 @@ body,
   cursor: pointer;
   border: none;
 }
-
 .primary-button:hover {
   background-color: var(--classic-darker-primary);
 }
 
 .primary-button:active {
-  background-color: #2652C5;
+  background-color: #2652c5;
 }
 
-.fit-content {
-  width: fit-content;
-}
-
-/* Logo */
 .rect-logo {
   width: 40px;
   height: 40px;
@@ -127,17 +120,15 @@ body,
   align-items: center;
 }
 
-/* Signup Banner */
 .signup-banner {
   position: fixed;
   bottom: 0;
   width: 100%;
   padding: 32px 0;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0px 1px 4px 0px #7a7c813d;
   background-color: var(--classic-white);
   display: none;
 }
-
 .signup-banner.show {
   display: block;
 }
@@ -164,7 +155,6 @@ body,
   color: var(--classic-grey-800);
   background-color: var(--classic-light-info);
 }
-
 .signup-banner-text a {
   color: var(--classic-primary);
   text-decoration: none;
@@ -172,13 +162,11 @@ body,
   font-size: 16px;
   transition: color 0.3s ease;
 }
-
 .signup-banner-text a:hover,
 .signup-banner-text a:active {
   color: var(--classic-darker-primary);
 }
 
-/* Reference Links */
 .reference-links {
   display: flex;
   flex-direction: row;
@@ -204,9 +192,16 @@ body,
   align-items: center;
 }
 
+.visit-doc svg {
+  transition: all 0.3s ease;
+}
+
 .visit-doc:hover,
-.visit-doc:active {
-  color: var(--classic-darker-primary);
+.visit-doc:active,
+.visit-doc:hover svg,
+.visit-doc:active svg {
+  fill: var(--classic-primary);
+  color: var(--classic-primary);
 }
 
 .icon-link {
@@ -215,26 +210,25 @@ body,
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
+  border-radius: 25%;
   background-color: transparent;
   transition: background-color 0.3s ease;
 }
-
 .icon-link:hover {
-  background-color: var(--classic-light-info);
+  background-color: var(--classic-grey-100);
 }
 
-/* Sections and Cards */
 .section-screen {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   min-height: 100vh;
+  padding: 130px 0;
 }
 
 .section-card {
-  box-shadow: var(--shadow-md);
+  box-shadow: 0px 4px 24px 0px #2f334b14;
   height: fit-content;
   padding: 24px;
   max-width: calc(100vw - 40px);
@@ -243,6 +237,7 @@ body,
   flex-direction: column;
   align-items: center;
   gap: 24px;
+  background-color: var(--classic-white);
 }
 
 .welcome-card {
@@ -257,7 +252,7 @@ body,
 }
 
 .welcome-title {
-  font-size: 30px;
+  font-size: 32px;
   line-height: 140%;
   font-weight: 700;
   color: var(--grey-900);
@@ -266,13 +261,12 @@ body,
 
 .welcome-text {
   font-size: 16px;
-  line-height: 120%;
+  line-height: 150%;
   font-weight: 400;
   color: var(--grey-600);
   text-align: center;
 }
 
-/* Account Card and Tenants */
 .account-card {
   width: 720px;
   display: flex;
@@ -283,21 +277,26 @@ body,
 .account-card .title-wrapper {
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 24px;
 }
 
 .account-card .title-wrapper .title {
-  font-size: 25px;
+  font-size: 26px;
   font-weight: 600;
   color: var(--grey-900);
 }
 
+.fit-content {
+  width: fit-content;
+}
+
 .tenants-wrapper {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 24px;
 }
 
@@ -307,8 +306,8 @@ body,
   display: flex;
   flex-flow: column;
   gap: 16px;
-  box-shadow: var(--shadow-md);
-  flex: 1;
+  box-shadow: 0px 4px 24px 0px #2f334b14;
+  flex-grow: 1;
 }
 
 .tenant-title {
@@ -350,7 +349,7 @@ body,
   background-color: var(--classic-grey-200);
   color: var(--classic-grey-700);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 100%;
 }
 
@@ -366,6 +365,7 @@ body,
 .tenant-info-item {
   display: grid;
   grid-template-columns: 88px 1fr;
+  align-items: center;
 }
 
 .tenant-info-item-title {
@@ -388,17 +388,13 @@ body,
   margin-top: auto;
 }
 
+.dropdown {
+}
+
 .dropdown-button {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.dropdown-button:hover {
-  background-color: var(--classic-grey-100);
 }
 
 .dropdown-menu {
@@ -408,7 +404,7 @@ body,
   display: none;
   z-index: 1000;
   width: 100%;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0px 4px 24px 0px #2f334b14;
   border-radius: 8px;
   background-color: var(--classic-white);
   padding: 4px 0;
@@ -436,7 +432,7 @@ body,
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
-  color: var(--classic-grey-800);
+  color: var(--classic-grey-900);
 }
 
 .dropdown-item:hover {
@@ -447,22 +443,45 @@ body,
   color: var(--classic-primary);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .account-card {
-    width: 100%;
+.tenant-info-copy-wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px;
+  align-items: center;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-button {
+  width: fit-content;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.copy-button svg {
+  transition: fill 0.3s ease;
+}
+
+.copy-button:hover svg,
+.copy-button:active svg {
+  fill: var(--classic-primary);
+}
+
+
+@media (min-width: 1280px) {
+  .container {
+    width: calc(100% - 160px);
   }
-  
+}
+
+@media (min-width: 768px) {
   .tenants-wrapper {
-    flex-direction: column;
-  }
-  
-  .account-card .title-wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .account-card .title-wrapper .title {
-    margin-bottom: 16px;
+    grid-template-columns: 1fr 1fr;
   }
 }

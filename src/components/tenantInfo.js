@@ -1,4 +1,5 @@
 import { getInitials } from "../utils/getInitials";
+import { copyToClipboardButton } from "./copyToClipboardButton";
 import { createTenantsDropdown } from "./tenantsDropdown";
 
 let currentLoadingTenantId = null;
@@ -108,11 +109,16 @@ export function createTenantInfo(
   idTitle.textContent = "ID";
   
   const idValue = document.createElement("p");
-  idValue.className = "tenant-info-item-value";
+  idValue.className = "tenant-info-item-value ellipsis";
   idValue.textContent = activeTenant.tenantId;
   
+  const idValueWrapper = document.createElement("div");
+  idValueWrapper.className = "tenant-info-copy-wrapper";
+  idValueWrapper.appendChild(idValue);
+  idValueWrapper.appendChild(copyToClipboardButton(activeTenant.tenantId));
+
   idItem.appendChild(idTitle);
-  idItem.appendChild(idValue);
+  idItem.appendChild(idValueWrapper);
   
   // Add members count item
   const membersItem = document.createElement("div");
