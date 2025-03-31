@@ -6,10 +6,27 @@ import { DEFAULT_SANDBOX_CONTEXT, ELEMENT_IDS } from "./constants/config";
 const frontegg = initialize({
   contextOptions: {
     baseUrl: DEFAULT_SANDBOX_CONTEXT.baseUrl,
-    clientId: DEFAULT_SANDBOX_CONTEXT.clientId,
+    appId: DEFAULT_SANDBOX_CONTEXT.appId,
+  },
+  authOptions: {
+    keepSessionAlive: true
   },
   hostedLoginBox: true,
 });
+
+// Uncomment to skip welcome page and redirect to login or app if authenticated
+// frontegg.ready(() => {
+//   frontegg.store.subscribe(()=>{
+//     const {auth} = frontegg.store.getState();
+
+//     if(!auth.isLoading) {
+//       if (!auth.isAuthenticated) {
+//         frontegg.loginWithRedirect()
+//       }
+//     }
+//   })
+// })
+
 
 const elements = {
   logoutBtn: document.getElementById(ELEMENT_IDS.logoutBtn),
@@ -68,10 +85,10 @@ frontegg.addOnLoadedListener(() => {
   const state = frontegg.store.getState().root.context;
   const isSandboxEnvironment = 
     state.baseUrl === "https://sandbox.frontegg.com" && 
-    state.clientId === "9af126b9-c35f-4e2d-a3f1-c261e22aaf4a";
+    state.appId === "da398ff8-c069-428e-974a-afcded8c0c04";
     
-  if (isSandboxEnvironment) {
-    elements.signupBanner.style.display = "block";
+  if (!isSandboxEnvironment) {
+    elements.signupBanner.classList.add("custom-credentials");
   }
 });
 

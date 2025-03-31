@@ -1,6 +1,6 @@
 export const DEFAULT_SANDBOX_CONTEXT = {
   baseUrl: "https://sandbox.frontegg.com",
-  clientId: "9af126b9-c35f-4e2d-a3f1-c261e22aaf4a",
+  appId: "da398ff8-c069-428e-974a-afcded8c0c04",
 };
 
 export const ELEMENT_IDS = {
