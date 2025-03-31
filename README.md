@@ -38,7 +38,7 @@ const frontegg = initialize({
   },
   hostedLoginBox: true,
 });
-
+```
 ### 1. Configure your Frontegg application (if using your own account) -
 
 1. Go to [Frontegg Portal](https://portal.frontegg.com/)
