@@ -81,6 +81,6 @@ npm start
 
 The app will be available at [http://localhost:3000](http://localhost:3000).
 
-![JavaScript sample](/public/assets/js-banner.png)
+![JavaScript sample](/public/assets/sample-vanilla.png)
 
 ### Experience Frontegg in action!
