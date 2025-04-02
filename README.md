@@ -13,6 +13,13 @@ This sample showcases how to seamlessly add authentication and user management t
 - Handle account state and data with ease
 - Implement seamless account switching functionality
 
+## Project structure
+
+- `src/app.js` - Main application file with Frontegg initialization
+- `src/components/` - UI components for displaying user and tenant information
+- `src/styles/globals.css` - Global styling for the application
+- `public/index.html` - HTML template 
+
 ## What you’ll need
 
 - [Node.js](https://nodejs.org)
@@ -45,7 +52,8 @@ const frontegg = initialize({
 2. Get your application ID from [ENVIRONMENT] → Applications
 3. Get your Frontegg domain from the Frontegg Portal → [ENVIRONMENT] → Keys & domains
 4. This sample runs on `http://localhost:3000`. You may need to add `http://localhost:3000` under → [ENVIRONMENT] → Keys & domains → Allowed origins
-5. Update your own application's credentials under `/src/constants/config.js`
+5. This sample runs on `http://localhost:3000`. If your application uses a different port, make sure to add `http://localhost:3000` under → [ENVIRONMENT] → Authentication → Login method → Redirect URLs
+6. Update your own application's credentials under `/src/constants/config.js`
 
 ### 2. Clone the repository - 
 
@@ -71,15 +79,8 @@ To start the application, run:
 npm start
 ```
 
-That’s it — you're all set!
-
 The app will be available at [http://localhost:3000](http://localhost:3000).
 
-## Project structure
-
-- `src/app.js` - Main application file with Frontegg initialization
-- `src/components/` - UI components for displaying user and tenant information
-- `src/styles/globals.css` - Global styling for the application
-- `public/index.html` - HTML template 
+![JavaScript sample](/public/assets/js-banner.png)
 
 ### Experience Frontegg in action!
