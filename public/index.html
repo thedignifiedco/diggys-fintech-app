@@ -10,6 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <script src="/bundle.js" defer></script>
   </head>
   <body>
     <header class="header">
@@ -50,14 +51,14 @@
         <div id="accountInfo"></div>
       </section>
     </main>
-
+    <div id="custom-loader" class="spinner-wrapper"><div class="spinner"></div></div>
     <div id="signup-banner" class="signup-banner">
       <div class="container signup-banner-wrapper">
         <p class="signup-banner-text">
           This sample uses Frontegg’s default credentials. Sign up to use your
           own configurations.
           <a
-            href="https://portal.frontegg.com/signup"
+            href="https://frontegg-prod.us.frontegg.com/oauth/account/sign-up"
             target="_blank"
             rel="noreferrer"
           >
@@ -86,7 +87,7 @@
           </a>
           <div class="third-party-links">
             <a
-              href="https://github.com/frontegg"
+              href="https://github.com/frontegg-samples/javascript-hosted-login.git"
               target="_blank"
               rel="noreferrer"
               class="icon-link"
@@ -105,7 +106,5 @@
         </div>
       </div>
     </div>
-
-    <script src="/bundle.js"></script>
   </body>
 </html>

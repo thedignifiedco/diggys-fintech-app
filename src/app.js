@@ -9,6 +9,7 @@ const frontegg = initialize({
     clientId: DEFAULT_SANDBOX_CONTEXT.clientId,
   },
   hostedLoginBox: true,
+  customLoader: true,
 });
 
 const elements = {
@@ -21,7 +22,7 @@ const elements = {
 function updateUI(state) {
   try {
     const { isAuthenticated, user, tenantsState } = state.auth;
-    
+
     elements.logoutBtn.style.display = isAuthenticated ? "block" : "none";
     elements.welcomeContent.style.display = isAuthenticated ? "none" : "flex";
 
@@ -37,7 +38,7 @@ function updateUI(state) {
 
 function updateAuthenticatedUI(user, tenantsState) {
   removeAccountInfo();
-  
+
   const accountInfoElement = createAccountInfo(
     user,
     tenantsState.tenants,
@@ -61,18 +62,24 @@ function removeAccountInfo() {
   }
 }
 
+function hideLoader() {
+  const loader = document.getElementById("custom-loader");
+  loader.style.display = "none";
+}
+
 elements.logoutBtn.addEventListener("click", () => frontegg.logout());
 elements.loginBtn.addEventListener("click", () => frontegg.loginWithRedirect());
 
 frontegg.addOnLoadedListener(() => {
   const state = frontegg.store.getState().root.context;
-  const isSandboxEnvironment = 
-    state.baseUrl === "https://sandbox.frontegg.com" && 
+  const isSandboxEnvironment =
+    state.baseUrl === "https://sandbox.frontegg.com" &&
     state.clientId === "9af126b9-c35f-4e2d-a3f1-c261e22aaf4a";
-    
+
   if (isSandboxEnvironment) {
     elements.signupBanner.style.display = "block";
   }
+  hideLoader();
 });
 
 frontegg.store.subscribe(() => updateUI(frontegg.store.getState()));
