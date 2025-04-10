@@ -127,10 +127,14 @@ body {
   padding: 32px 0;
   box-shadow: 0px 1px 4px 0px #7a7c813d;
   background-color: var(--classic-white);
-  display: none;
 }
-.signup-banner.show {
-  display: block;
+
+.custom-credentials .signup-banner-wrapper{
+  justify-content: center;
+}
+
+.custom-credentials .signup-banner-text {
+  display: none;
 }
 
 .signup-banner-wrapper {
