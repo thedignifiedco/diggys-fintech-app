@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: main
+          ref: master
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -99,15 +99,15 @@ jobs:
           ## Changelog:
           Check the [Frontegg changelog](https://github.com/frontegg/frontegg-js/releases) for details on what's included in this update."
           # Check if PR already exists
-          PR_EXISTS=$(gh pr list --head frontegg-autoupdate --base main --json number | jq 'length')
+          PR_EXISTS=$(gh pr list --head frontegg-autoupdate --base master --json number | jq 'length')
           if [ "$PR_EXISTS" -eq "0" ]; then
             # Create new PR
-            PR_URL=$(gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head frontegg-autoupdate)
+            PR_URL=$(gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base master --head frontegg-autoupdate)
             echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
             echo "Created new PR: $PR_TITLE"
           else
             echo "PR already exists, updating existing PR"
-            PR_NUMBER=$(gh pr list --head frontegg-autoupdate --base main --json number | jq '.[0].number')
+            PR_NUMBER=$(gh pr list --head frontegg-autoupdate --base master --json number | jq '.[0].number')
             gh pr edit $PR_NUMBER --title "$PR_TITLE" --body "$PR_BODY"
             PR_URL=$(gh pr view $PR_NUMBER --json url | jq -r '.url')
             echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
