@@ -12,6 +12,7 @@ const frontegg = initialize({
     keepSessionAlive: true
   },
   hostedLoginBox: true,
+  customLoader: true,
 });
 
 // Uncomment to skip welcome page and redirect to login or app if authenticated
@@ -38,7 +39,7 @@ const elements = {
 function updateUI(state) {
   try {
     const { isAuthenticated, user, tenantsState } = state.auth;
-    
+
     elements.logoutBtn.style.display = isAuthenticated ? "block" : "none";
     elements.welcomeContent.style.display = isAuthenticated ? "none" : "flex";
 
@@ -54,7 +55,7 @@ function updateUI(state) {
 
 function updateAuthenticatedUI(user, tenantsState) {
   removeAccountInfo();
-  
+
   const accountInfoElement = createAccountInfo(
     user,
     tenantsState.tenants,
@@ -78,6 +79,11 @@ function removeAccountInfo() {
   }
 }
 
+function hideLoader() {
+  const loader = document.getElementById("custom-loader");
+  loader.style.display = "none";
+}
+
 elements.logoutBtn.addEventListener("click", () => frontegg.logout());
 elements.loginBtn.addEventListener("click", () => frontegg.loginWithRedirect());
 
@@ -90,6 +96,7 @@ frontegg.addOnLoadedListener(() => {
   if (!isSandboxEnvironment) {
     elements.signupBanner.classList.add("custom-credentials");
   }
+  hideLoader();
 });
 
 frontegg.store.subscribe(() => updateUI(frontegg.store.getState()));
