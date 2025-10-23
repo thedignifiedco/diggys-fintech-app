@@ -1,7 +1,7 @@
 {
-  "name": "frontegg-vanilla-hosted-login",
+  "name": "securebank-fintech-app",
   "version": "1.0.0",
-  "description": "Vanilla JavaScript implementation of Frontegg hosted login",
+  "description": "SecureBank - A fintech application with Frontegg authentication and step-up security",
   "scripts": {
     "start": "webpack serve --mode development",
     "build": "webpack --mode production"

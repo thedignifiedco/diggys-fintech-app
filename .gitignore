@@ -1,1 +1,6 @@
 node_modules
+# Snyk Security Extension - AI Rules (auto-generated)
+.cursor/rules/snyk_rules.mdc
+
+# Configuration files with sensitive data
+src/constants/config.js

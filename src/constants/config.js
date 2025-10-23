@@ -1,6 +1,6 @@
 export const DEFAULT_SANDBOX_CONTEXT = {
-  baseUrl: "https://sandbox.frontegg.com",
-  appId: "da398ff8-c069-428e-974a-afcded8c0c04",
+  baseUrl: "https://dignifiedlabs-dev.frontegg.com",
+  appId: "61738a0b-2dfa-49fe-b5fd-320bb2e279cf",
 };
 
 export const ELEMENT_IDS = {
