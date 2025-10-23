@@ -66,12 +66,17 @@ You'll need a Frontegg account to use your own credentials. [Sign up for free](h
    npm install
    ```
 
-3. **Start the application**
+3. **Build the application** (optional - for production)
+   ```bash
+   npm run build
+   ```
+
+4. **Start the application**
    ```bash
    npm start
    ```
 
-4. **Open your browser** to [http://localhost:3000](http://localhost:3000)
+5. **Open your browser** to [http://localhost:3000](http://localhost:3000)
 
 The app will work immediately with the included sandbox credentials!
 
@@ -95,6 +100,7 @@ The app will work immediately with the included sandbox credentials!
 3. **Install and run**
    ```bash
    npm install
+   npm run build  # Optional: build for production
    npm start
    ```
 
