@@ -58,7 +58,7 @@ You'll need a Frontegg account to use your own credentials. [Sign up for free](h
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd javascript-hosted-login
+   cd diggys-fintech-app
    ```
 
 2. **Install dependencies**

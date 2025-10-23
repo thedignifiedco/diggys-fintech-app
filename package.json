@@ -1,7 +1,7 @@
 {
-  "name": "securebank-fintech-app",
+  "name": "diggys-fintech-app",
   "version": "1.0.0",
-  "description": "SecureBank - A fintech application with Frontegg authentication and step-up security",
+  "description": "Diggys - A fintech application with Frontegg authentication and step-up security",
   "scripts": {
     "start": "webpack serve --mode development",
     "build": "webpack --mode production"
