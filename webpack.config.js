@@ -1,5 +1,6 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/app.js',
@@ -25,6 +26,15 @@ module.exports = {
       safe: false, // Don't require .env.example
       systemvars: true, // Load system environment variables as well (for Vercel)
       defaults: false, // Don't use .env.defaults
+    }),
+    // Copy public folder contents to dist folder (for Vercel deployment)
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'public'),
+          to: path.resolve(__dirname, 'dist'),
+        },
+      ],
     }),
   ],
   devServer: {

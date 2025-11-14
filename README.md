@@ -2,7 +2,7 @@
 
 # SecureBank - Fintech Demo with Frontegg Authentication
 
-This sample application demonstrates how to build a secure fintech application using Frontegg's authentication and step-up security features. The app simulates a digital banking platform with advanced security measures for high-value transactions.
+This is a **vanilla JavaScript application** built with **Webpack** (not React or Vite). This sample application demonstrates how to build a secure fintech application using Frontegg's authentication and step-up security features. The app simulates a digital banking platform with advanced security measures for high-value transactions.
 
 ## 🏦 What This Demo Showcases
 
@@ -189,9 +189,11 @@ This application is ready to deploy to Vercel with environment variable support:
    - Click "Save"
 
 4. **Configure Build Settings** (if needed)
+   - Vercel should auto-detect the settings from `vercel.json`
    - **Build Command:** `npm run build`
    - **Output Directory:** `dist`
    - **Install Command:** `npm install`
+   - **Framework Preset:** Other (this is a vanilla JS/Webpack app, not React/Vite)
 
 5. **Update Frontegg Allowed Origins**
    - In your Frontegg dashboard, add your Vercel deployment URL to **Allowed Origins**

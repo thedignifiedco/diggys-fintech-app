@@ -7,6 +7,7 @@
     "build": "webpack --mode production"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^6.8.1",
     "dotenv-webpack": "^8.1.1",
     "style-loader": "^3.3.3",
