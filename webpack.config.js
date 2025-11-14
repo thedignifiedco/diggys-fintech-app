@@ -1,4 +1,5 @@
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/app.js',
@@ -15,6 +16,17 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    // Load environment variables from .env file (for local development)
+    // Also loads system environment variables (for Vercel deployment)
+    // Automatically injects them via DefinePlugin
+    new Dotenv({
+      path: './.env', // Path to .env file (optional, will use system vars if not found)
+      safe: false, // Don't require .env.example
+      systemvars: true, // Load system environment variables as well (for Vercel)
+      defaults: false, // Don't use .env.defaults
+    }),
+  ],
   devServer: {
     static: [
       {
@@ -28,7 +40,7 @@ module.exports = {
     ],
     historyApiFallback: true,
     hot: true,
-    port: 3000,
+    port: 4040,
     open: true,
   },
 };

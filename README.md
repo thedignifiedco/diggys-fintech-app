@@ -116,15 +116,95 @@ The app will work immediately with the included sandbox credentials!
 
 ## 🔧 Configuration
 
-The application uses a configuration file to manage Frontegg credentials:
+The application supports two methods for configuring Frontegg credentials:
 
+### Method 1: Environment Variables (Recommended for Vercel)
+
+The app reads configuration from environment variables, which is perfect for Vercel deployment:
+
+**Environment Variables:**
+- `VITE_FRONTEGG_BASE_URL` - Your Frontegg base URL (e.g., `https://your-tenant.frontegg.com`)
+- `VITE_FRONTEGG_APP_ID` - Your Frontegg App ID
+
+**For Local Development:**
+1. Create a `.env` file in the project root:
+   ```bash
+   VITE_FRONTEGG_BASE_URL=https://your-tenant.frontegg.com
+   VITE_FRONTEGG_APP_ID=your-app-id-here
+   ```
+2. The app will automatically use these values
+
+**For Vercel Deployment:**
+1. Go to your Vercel project dashboard
+2. Navigate to **Settings** > **Environment Variables**
+3. Add the following variables:
+   - `VITE_FRONTEGG_BASE_URL` = `https://your-tenant.frontegg.com`
+   - `VITE_FRONTEGG_APP_ID` = `your-app-id-here`
+4. Select the environments where these should apply (Production, Preview, Development)
+5. Redeploy your application
+
+### Method 2: Config File (Local Development Alternative)
+
+For local development, you can also use a config file:
 - **`config-sample.js`** - Template with placeholder values
 - **`config.js`** - Your actual configuration (not tracked in git)
 
-To use your own Frontegg account:
+To use this method:
 1. Copy `config-sample.js` to `config.js`
-2. Update the `baseUrl` and `appId` with your Frontegg credentials
-3. The application will automatically use your configuration
+2. Update the fallback values in `config.js` with your Frontegg credentials
+3. The application will use these values if environment variables are not set
+
+**Note:** Environment variables take precedence over config file values.
+
+## 🚀 Deploying to Vercel
+
+This application is ready to deploy to Vercel with environment variable support:
+
+### Prerequisites
+1. A Vercel account ([sign up for free](https://vercel.com/signup))
+2. Your Frontegg credentials (Base URL and App ID)
+
+### Deployment Steps
+
+1. **Push your code to GitHub/GitLab/Bitbucket**
+   ```bash
+   git add .
+   git commit -m "Ready for Vercel deployment"
+   git push
+   ```
+
+2. **Import your project to Vercel**
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click "Add New Project"
+   - Import your repository
+
+3. **Configure Environment Variables**
+   - In the project settings, go to **Settings** > **Environment Variables**
+   - Add the following variables:
+     - **Key:** `VITE_FRONTEGG_BASE_URL`
+       **Value:** `https://your-tenant.frontegg.com`
+     - **Key:** `VITE_FRONTEGG_APP_ID`
+       **Value:** `your-app-id-here`
+   - Select which environments to apply to (Production, Preview, Development)
+   - Click "Save"
+
+4. **Configure Build Settings** (if needed)
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+   - **Install Command:** `npm install`
+
+5. **Update Frontegg Allowed Origins**
+   - In your Frontegg dashboard, add your Vercel deployment URL to **Allowed Origins**
+   - Add your Vercel URL to **Redirect URLs** (e.g., `https://your-app.vercel.app`)
+
+6. **Deploy**
+   - Click "Deploy" or push a new commit to trigger deployment
+   - Vercel will automatically build and deploy your application
+
+### Important Notes
+- Environment variables are injected at build time
+- Make sure to add your Vercel domain to Frontegg's allowed origins
+- The app will use environment variables if set, otherwise fall back to config.js defaults
 
 ## 🎯 Key Features Demonstrated
 
