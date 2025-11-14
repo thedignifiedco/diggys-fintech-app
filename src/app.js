@@ -3,17 +3,47 @@ import "./styles/globals.css";
 import { createAccountInfo } from "./components/accountInfo";
 import { DEFAULT_SANDBOX_CONTEXT, ELEMENT_IDS } from "./constants/config";
 
-const frontegg = initialize({
-  contextOptions: {
-    baseUrl: DEFAULT_SANDBOX_CONTEXT.baseUrl,
-    appId: DEFAULT_SANDBOX_CONTEXT.appId,
-  },
-  authOptions: {
-    keepSessionAlive: true
-  },
-  hostedLoginBox: true,
-  customLoader: true,
-});
+// Wait for DOM to be ready before initializing Frontegg
+let frontegg;
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeFrontegg);
+} else {
+  // DOM is already ready
+  initializeFrontegg();
+}
+
+// Elements will be initialized when DOM is ready
+let elements = {};
+
+function initializeFrontegg() {
+  // Initialize DOM elements first
+  elements = {
+    logoutBtn: document.getElementById(ELEMENT_IDS.logoutBtn),
+    loginBtn: document.getElementById(ELEMENT_IDS.loginBtn),
+    welcomeContent: document.getElementById(ELEMENT_IDS.welcomeContent),
+    signupBanner: document.getElementById(ELEMENT_IDS.signupBanner),
+    mainNav: document.getElementById('mainNav'),
+    dashboardPage: document.getElementById('dashboardPage'),
+    transferPage: document.getElementById('transferPage'),
+    transactionsPage: document.getElementById('transactionsPage'),
+    transferForm: document.getElementById('transferForm'),
+  };
+  
+  frontegg = initialize({
+    contextOptions: {
+      baseUrl: DEFAULT_SANDBOX_CONTEXT.baseUrl,
+      appId: DEFAULT_SANDBOX_CONTEXT.appId,
+    },
+    authOptions: {
+      keepSessionAlive: true
+    },
+    hostedLoginBox: true,
+    customLoader: true,
+  });
+  
+  // Initialize the rest of the app after Frontegg is ready
+  setupApp();
+}
 
 // Uncomment to skip welcome page and redirect to login or app if authenticated
 // frontegg.ready(() => {
@@ -28,26 +58,19 @@ const frontegg = initialize({
 //   })
 // })
 
-
-const elements = {
-  logoutBtn: document.getElementById(ELEMENT_IDS.logoutBtn),
-  loginBtn: document.getElementById(ELEMENT_IDS.loginBtn),
-  welcomeContent: document.getElementById(ELEMENT_IDS.welcomeContent),
-  signupBanner: document.getElementById(ELEMENT_IDS.signupBanner),
-  mainNav: document.getElementById('mainNav'),
-  dashboardPage: document.getElementById('dashboardPage'),
-  transferPage: document.getElementById('transferPage'),
-  transactionsPage: document.getElementById('transactionsPage'),
-  transferForm: document.getElementById('transferForm'),
-};
-
 function updateUI(state) {
   try {
     const { isAuthenticated, user, tenantsState, isSteppedUp } = state.auth;
 
-    elements.logoutBtn.style.display = isAuthenticated ? "block" : "none";
-    elements.welcomeContent.style.display = isAuthenticated ? "none" : "flex";
-    elements.mainNav.style.display = isAuthenticated ? "flex" : "none";
+    if (elements.logoutBtn) {
+      elements.logoutBtn.style.display = isAuthenticated ? "block" : "none";
+    }
+    if (elements.welcomeContent) {
+      elements.welcomeContent.style.display = isAuthenticated ? "none" : "flex";
+    }
+    if (elements.mainNav) {
+      elements.mainNav.style.display = isAuthenticated ? "flex" : "none";
+    }
 
     if (isAuthenticated && user) {
       updateAuthenticatedUI(user, tenantsState);
@@ -112,7 +135,9 @@ function removeAccountInfo() {
 
 function hideLoader() {
   const loader = document.getElementById("custom-loader");
-  loader.style.display = "none";
+  if (loader) {
+    loader.style.display = "none";
+  }
 }
 
 // Navigation functions
@@ -123,21 +148,33 @@ function showPage(pageName) {
   
   switch(pageName) {
     case 'dashboard':
-      elements.dashboardPage.style.display = 'block';
+      if (elements.dashboardPage) {
+        elements.dashboardPage.style.display = 'block';
+      }
       break;
     case 'transfer':
-      elements.transferPage.style.display = 'block';
+      if (elements.transferPage) {
+        elements.transferPage.style.display = 'block';
+      }
       break;
     case 'transactions':
-      elements.transactionsPage.style.display = 'block';
+      if (elements.transactionsPage) {
+        elements.transactionsPage.style.display = 'block';
+      }
       break;
   }
 }
 
 function hideAllPages() {
-  elements.dashboardPage.style.display = 'none';
-  elements.transferPage.style.display = 'none';
-  elements.transactionsPage.style.display = 'none';
+  if (elements.dashboardPage) {
+    elements.dashboardPage.style.display = 'none';
+  }
+  if (elements.transferPage) {
+    elements.transferPage.style.display = 'none';
+  }
+  if (elements.transactionsPage) {
+    elements.transactionsPage.style.display = 'none';
+  }
 }
 
 function updateActiveNavLink(pageName) {
@@ -466,9 +503,6 @@ function isUserSteppedUp() {
   }
 }
 
-elements.logoutBtn.addEventListener("click", () => frontegg.logout());
-elements.loginBtn.addEventListener("click", () => frontegg.loginWithRedirect());
-
 // Navigation event listeners
 document.addEventListener('click', (event) => {
   if (event.target.matches('.nav-link') || event.target.matches('.action-button') || event.target.matches('.mobile-nav-link')) {
@@ -576,16 +610,12 @@ function updateMobileMenuActiveState() {
   });
 }
 
-// Transfer form event listener
-elements.transferForm.addEventListener('submit', handleTransferSubmit);
 
-// Add real-time step-up indicator
-const amountInput = document.getElementById('amount');
-if (amountInput) {
-  amountInput.addEventListener('input', updateStepUpIndicator);
-}
 
 function updateStepUpIndicator() {
+  const amountInput = document.getElementById('amount');
+  if (!amountInput) return;
+  
   const amount = parseFloat(amountInput.value) || 0;
   const stepUpIndicator = document.getElementById('stepUpIndicator');
   
@@ -614,29 +644,56 @@ function createStepUpIndicator() {
   amountGroup.appendChild(indicator);
 }
 
-frontegg.addOnLoadedListener(() => {
-  const state = frontegg.store.getState().root.context;
-  const isSandboxEnvironment = 
-    state.baseUrl === "https://dignifiedlabs-dev.frontegg.com" && 
-    state.appId === "61738a0b-2dfa-49fe-b5fd-320bb2e279cf";
-    
-  if (!isSandboxEnvironment) {
-    elements.signupBanner.classList.add("custom-credentials");
+function setupApp() {
+  // Set up event listeners for elements
+  if (elements.logoutBtn) {
+    elements.logoutBtn.addEventListener("click", () => frontegg.logout());
+  }
+  if (elements.loginBtn) {
+    elements.loginBtn.addEventListener("click", () => frontegg.loginWithRedirect());
+  }
+  if (elements.transferForm) {
+    elements.transferForm.addEventListener('submit', handleTransferSubmit);
   }
   
-  // Debug: Check available methods on frontegg object
-  console.log('Frontegg loaded. Available methods:', Object.getOwnPropertyNames(frontegg));
-  console.log('Frontegg stepUp method:', typeof frontegg.stepUp);
-  console.log('Frontegg isSteppedUp method:', typeof frontegg.isSteppedUp);
+  // Add real-time step-up indicator
+  const amountInput = document.getElementById('amount');
+  if (amountInput) {
+    amountInput.addEventListener('input', updateStepUpIndicator);
+  }
   
-  // Initialize mobile menu
-  initMobileMenu();
+  frontegg.addOnLoadedListener(() => {
+    const state = frontegg.store.getState().root.context;
+    const isSandboxEnvironment = 
+      state.baseUrl === "https://dignifiedlabs-dev.frontegg.com" && 
+      state.appId === "61738a0b-2dfa-49fe-b5fd-320bb2e279cf";
+      
+    if (!isSandboxEnvironment && elements.signupBanner) {
+      elements.signupBanner.classList.add("custom-credentials");
+    }
+    
+    // Debug: Check available methods on frontegg object
+    console.log('Frontegg loaded. Available methods:', Object.getOwnPropertyNames(frontegg));
+    console.log('Frontegg stepUp method:', typeof frontegg.stepUp);
+    console.log('Frontegg isSteppedUp method:', typeof frontegg.isSteppedUp);
+    
+    // Initialize mobile menu
+    initMobileMenu();
+    
+    // Check for pending transfers on page load
+    checkForPendingTransferOnLoad();
+    
+    hideLoader();
+  });
   
-  // Check for pending transfers on page load
-  checkForPendingTransferOnLoad();
-  
-  hideLoader();
-});
+  // Subscribe to store changes
+  frontegg.store.subscribe(() => {
+    updateUI(frontegg.store.getState());
+    
+    // Check if there's a pending transfer after step-up authentication
+    checkPendingTransfer();
+  });
+}
 
 function checkForPendingTransferOnLoad() {
   const pendingTransfer = localStorage.getItem('pendingTransfer');
@@ -660,13 +717,6 @@ function checkForPendingTransferOnLoad() {
     }
   }
 }
-
-frontegg.store.subscribe(() => {
-  updateUI(frontegg.store.getState());
-  
-  // Check if there's a pending transfer after step-up authentication
-  checkPendingTransfer();
-});
 
 function checkPendingTransfer() {
   const state = frontegg.store.getState();
