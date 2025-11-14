@@ -3,46 +3,64 @@ import "./styles/globals.css";
 import { createAccountInfo } from "./components/accountInfo";
 import { DEFAULT_SANDBOX_CONTEXT, ELEMENT_IDS } from "./constants/config";
 
-// Wait for DOM to be ready before initializing Frontegg
-let frontegg;
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeFrontegg);
-} else {
-  // DOM is already ready
-  initializeFrontegg();
-}
-
 // Elements will be initialized when DOM is ready
 let elements = {};
+let frontegg = null;
 
-function initializeFrontegg() {
-  // Initialize DOM elements first
-  elements = {
-    logoutBtn: document.getElementById(ELEMENT_IDS.logoutBtn),
-    loginBtn: document.getElementById(ELEMENT_IDS.loginBtn),
-    welcomeContent: document.getElementById(ELEMENT_IDS.welcomeContent),
-    signupBanner: document.getElementById(ELEMENT_IDS.signupBanner),
-    mainNav: document.getElementById('mainNav'),
-    dashboardPage: document.getElementById('dashboardPage'),
-    transferPage: document.getElementById('transferPage'),
-    transactionsPage: document.getElementById('transactionsPage'),
-    transferForm: document.getElementById('transferForm'),
-  };
-  
-  frontegg = initialize({
-    contextOptions: {
-      baseUrl: DEFAULT_SANDBOX_CONTEXT.baseUrl,
-      appId: DEFAULT_SANDBOX_CONTEXT.appId,
-    },
-    authOptions: {
-      keepSessionAlive: true
-    },
-    hostedLoginBox: true,
-    customLoader: true,
-  });
-  
-  // Initialize the rest of the app after Frontegg is ready
-  setupApp();
+// Initialize app when DOM is ready
+function init() {
+  try {
+    // Initialize DOM elements first
+    elements = {
+      logoutBtn: document.getElementById(ELEMENT_IDS.logoutBtn),
+      loginBtn: document.getElementById(ELEMENT_IDS.loginBtn),
+      welcomeContent: document.getElementById(ELEMENT_IDS.welcomeContent),
+      signupBanner: document.getElementById(ELEMENT_IDS.signupBanner),
+      mainNav: document.getElementById('mainNav'),
+      dashboardPage: document.getElementById('dashboardPage'),
+      transferPage: document.getElementById('transferPage'),
+      transactionsPage: document.getElementById('transactionsPage'),
+      transferForm: document.getElementById('transferForm'),
+    };
+    
+    // Initialize Frontegg
+    frontegg = initialize({
+      contextOptions: {
+        baseUrl: DEFAULT_SANDBOX_CONTEXT.baseUrl,
+        appId: DEFAULT_SANDBOX_CONTEXT.appId,
+      },
+      authOptions: {
+        keepSessionAlive: true
+      },
+      hostedLoginBox: true,
+      customLoader: true,
+    });
+    
+    // Initialize the rest of the app after Frontegg is ready
+    setupApp();
+    
+    // Fallback: Hide loader after 10 seconds to prevent infinite loading
+    setTimeout(() => {
+      hideLoader();
+    }, 10000);
+  } catch (error) {
+    console.error('Error initializing app:', error);
+    // Hide loader even if there's an error
+    hideLoader();
+  }
+}
+
+// Wait for DOM to be ready before initializing
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    // DOM is already ready, use setTimeout to ensure all scripts are loaded
+    setTimeout(init, 100);
+  }
+} else {
+  // Fallback if document is not available
+  console.error('Document is not available');
 }
 
 // Uncomment to skip welcome page and redirect to login or app if authenticated
@@ -114,7 +132,9 @@ function updateAuthenticatedUI(user, tenantsState) {
     user,
     tenantsState.tenants,
     tenantsState.activeTenant,
-    (tenant) => frontegg.switchTenant({ tenantId: tenant.tenantId }),
+    (tenant) => {
+      if (frontegg) frontegg.switchTenant({ tenantId: tenant.tenantId });
+    },
     frontegg
   );
 
@@ -139,6 +159,7 @@ function hideLoader() {
     loader.style.display = "none";
   }
 }
+
 
 // Navigation functions
 function showPage(pageName) {
@@ -248,7 +269,7 @@ async function processTransfer(transferData) {
       // Trigger Frontegg step-up authentication
       console.log('Triggering Frontegg step-up authentication...');
       try {
-        if (typeof frontegg.stepUp === 'function') {
+        if (frontegg && typeof frontegg.stepUp === 'function') {
           frontegg.stepUp({ maxAge: MAX_AGE });
           console.log('Step-up authentication triggered successfully');
           
@@ -494,6 +515,7 @@ function hideTransferSuccessModal() {
 function isUserSteppedUp() {
   // Check if user is already stepped up using Frontegg's isSteppedUp method
   try {
+    if (!frontegg) return false;
     const steppedUp = frontegg.isSteppedUp({ maxAge: MAX_AGE });
     console.log('isUserSteppedUp result:', steppedUp, 'maxAge:', MAX_AGE);
     return steppedUp;
@@ -645,12 +667,22 @@ function createStepUpIndicator() {
 }
 
 function setupApp() {
+  if (!frontegg) {
+    console.error('Frontegg not initialized');
+    hideLoader();
+    return;
+  }
+  
   // Set up event listeners for elements
   if (elements.logoutBtn) {
-    elements.logoutBtn.addEventListener("click", () => frontegg.logout());
+    elements.logoutBtn.addEventListener("click", () => {
+      if (frontegg) frontegg.logout();
+    });
   }
   if (elements.loginBtn) {
-    elements.loginBtn.addEventListener("click", () => frontegg.loginWithRedirect());
+    elements.loginBtn.addEventListener("click", () => {
+      if (frontegg) frontegg.loginWithRedirect();
+    });
   }
   if (elements.transferForm) {
     elements.transferForm.addEventListener('submit', handleTransferSubmit);
@@ -687,15 +719,21 @@ function setupApp() {
   });
   
   // Subscribe to store changes
-  frontegg.store.subscribe(() => {
-    updateUI(frontegg.store.getState());
-    
-    // Check if there's a pending transfer after step-up authentication
-    checkPendingTransfer();
-  });
+  if (frontegg && frontegg.store) {
+    frontegg.store.subscribe(() => {
+      if (frontegg && frontegg.store) {
+        updateUI(frontegg.store.getState());
+        
+        // Check if there's a pending transfer after step-up authentication
+        checkPendingTransfer();
+      }
+    });
+  }
 }
 
 function checkForPendingTransferOnLoad() {
+  if (!frontegg || !frontegg.store) return;
+  
   const pendingTransfer = localStorage.getItem('pendingTransfer');
   if (pendingTransfer) {
     console.log('Found pending transfer on page load:', JSON.parse(pendingTransfer));
@@ -719,6 +757,8 @@ function checkForPendingTransferOnLoad() {
 }
 
 function checkPendingTransfer() {
+  if (!frontegg || !frontegg.store) return;
+  
   const state = frontegg.store.getState();
   const { isAuthenticated } = state.auth;
   
